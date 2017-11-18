@@ -1,0 +1,15 @@
+tags:
+  - python
+
+feeds:
+  - https://medium.com/feed/tag/programming
+
+trim:
+  - "Read more"
+
+slack:
+  token: "secret"
+  channel: "#some_channel"
+
+db:
+  file: "./bolt.db"
