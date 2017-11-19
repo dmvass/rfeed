@@ -16,7 +16,6 @@ func init() {
 	}
 }
 
-// TestTrim trim string from test
 func TestTrim(t *testing.T) {
 	saved := conf.Settings.TrimStrings
 	defer func() {

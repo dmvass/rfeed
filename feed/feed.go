@@ -17,30 +17,28 @@ import (
 
 var bucket = store.Bucket
 
-// Generator feed data
-type Generator struct {
+// Author feed data
+type Author struct {
 	Title, Link, Image string
 }
 
 // Item can validate items and send to channels
 type Item struct {
 	Title, Description, Link, Image string
-	Author                          *Generator
+	Author                          *Author
+}
+
+func getImage(img *gofeed.Image) (title string, imgURL string) {
+	if img != nil {
+		title = img.Title
+		imgURL = img.URL
+	}
+	return
 }
 
 // NewItem constructor
 func NewItem(feed *gofeed.Feed, feedItem *gofeed.Item) Item {
-	getImage := func(img *gofeed.Image) (title string, imgURL string) {
-		if img != nil {
-			title = img.Title
-			imgURL = img.URL
-		}
-		return
-	}
-
-	author := &Generator{
-		Title: feed.Generator,
-	}
+	author := &Author{Link: feed.Link}
 	author.Title, author.Image = getImage(feed.Image)
 
 	item := Item{
