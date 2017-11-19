@@ -6,9 +6,9 @@ import (
 	"sync"
 	"time"
 
+	conf "github.com/vasilishin/rfeed/config"
 	"github.com/vasilishin/rfeed/store"
 
-	"github.com/spf13/viper"
 	"github.com/vasilishin/rfeed/feed"
 	"github.com/vasilishin/rfeed/slack"
 )
@@ -16,14 +16,17 @@ import (
 func init() {
 	var err error
 	// Read settings from config file
-	ReadSettings()
+	conf.Settings, err = conf.NewSettings("config", ".")
+	if err != nil {
+		panic(fmt.Errorf("Fatal error config file: %s", err))
+	}
 	// Create Slack client
 	slack.Client = slack.NewClient(
-		viper.GetString("slack.token"),
-		viper.GetString("slack.channel"),
+		conf.Settings.Slack.Token,
+		conf.Settings.Slack.Channel,
 	)
 	// Create connect to Database
-	store.Engine, err = store.NewBolt(viper.GetString("db.file"))
+	store.Engine, err = store.NewBolt(conf.Settings.Store.Bolt.FilePath)
 	if err != nil {
 		panic(fmt.Errorf("Fatal error in Database: %s", err))
 	}
@@ -34,7 +37,7 @@ func main() {
 	// Read feeds every 5 min
 	duration := 5 * time.Minute
 	wg := new(sync.WaitGroup)
-	for _, url := range viper.GetStringSlice("feeds") {
+	for _, url := range conf.Settings.Feeds {
 		wg.Add(1)
 		go observe(url, duration, wg)
 	}
@@ -62,15 +65,5 @@ func observe(url string, duration time.Duration, wg *sync.WaitGroup) {
 				log.Fatal(err)
 			}
 		}
-	}
-}
-
-// ReadSettings from config file
-func ReadSettings() {
-	viper.SetConfigName("config")
-	viper.AddConfigPath(".")
-	err := viper.ReadInConfig()
-	if err != nil {
-		panic(fmt.Errorf("Fatal error config file: %s", err))
 	}
 }

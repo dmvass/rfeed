@@ -21,3 +21,6 @@ config.yml
 
 # vendor pkgs
 vendor/
+
+# ide
+.vscode/

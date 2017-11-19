@@ -9,9 +9,10 @@ import (
 	"github.com/boltdb/bolt"
 	strip "github.com/grokify/html-strip-tags-go"
 	"github.com/mmcdole/gofeed"
-	"github.com/spf13/viper"
 	"github.com/vasilishin/rfeed/slack"
 	"github.com/vasilishin/rfeed/store"
+
+	conf "github.com/vasilishin/rfeed/config"
 )
 
 var bucket = store.Bucket
@@ -152,7 +153,7 @@ func SkipItem(item *gofeed.Item) bool {
 		}
 		return false
 	}
-	for _, tag := range viper.GetStringSlice("tags") {
+	for _, tag := range conf.Settings.Tags {
 		if contains(item.Categories, tag) {
 			return false
 		}
