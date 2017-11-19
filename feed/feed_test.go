@@ -70,40 +70,46 @@ func TestNewItem(t *testing.T) {
 				item.Author.Title,
 				authorTitle,
 			)
-			// Chack Item Author Image value
-		} else if item.Author.Image != authorImg {
+		}
+		// Chack Item Author Image value
+		if item.Author.Image != authorImg {
 			t.Errorf(
 				"Item.Author.Image was incorrect, got: %v, want: %v",
 				item.Author.Image, authorImg,
 			)
-			// Chack Item Author Link value
-		} else if item.Author.Link != feed.Link {
+		}
+		// Chack Item Author Link value
+		if item.Author.Link != feed.Link {
 			t.Errorf(
 				"Item.Author.Link was incorrect, got: %v, want: %v",
 				item.Author.Link, feed.Link,
 			)
-			// Chack Item Title value without html tags
-		} else if item.Title != strip.StripTags(feedItem.Title) {
+		}
+		// Chack Item Title value without html tags
+		if item.Title != strip.StripTags(feedItem.Title) {
 			t.Errorf(
 				"Item.Title was incorrect, got: %v, want: %v",
 				item.Title,
 				strip.StripTags(feedItem.Title),
 			)
-			// Chack Item Description value without html tags
-		} else if item.Description != strip.StripTags(feedItem.Description) {
+		}
+		// Chack Item Description value without html tags
+		if item.Description != strip.StripTags(feedItem.Description) {
 			t.Errorf(
 				"Item.Description was incorrect, got: %v, want: %v",
 				item.Description,
 				strip.StripTags(feedItem.Description),
 			)
-			// Chack Item Link value
-		} else if item.Link != feedItem.Link {
+		}
+		// Chack Item Link value
+		if item.Link != feedItem.Link {
 			t.Errorf(
 				"Item.Link was incorrect, got: %v, want: %v",
 				item.Link, feedItem.Link,
 			)
-			// Chack Item Image value
-		} else if item.Image != itemImg {
+		}
+		// Chack Item Image value
+		if item.Image != itemImg {
 			t.Errorf(
 				"Item.Image was incorrect, got: %v, want: %v",
 				item.Image, itemImg,
