@@ -7,9 +7,10 @@ feeds:
 trim:
   - "Read more"
 
+store:
+  bolt:
+    file: "./bolt.db"
+
 slack:
   token: "secret"
   channel: "#some_channel"
-
-db:
-  file: "./bolt.db"
