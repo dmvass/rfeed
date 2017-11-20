@@ -60,31 +60,7 @@ func getFeed(data string) (*gofeed.Feed, error) {
 func TestNewItem(t *testing.T) {
 	feed, _ := getFeed(rssXML)
 	for _, feedItem := range feed.Items {
-		item := NewItem(feed, feedItem)
-		authorTitle, authorImg := getImage(feed.Image)
-		_, itemImg := getImage(feedItem.Image)
-		// Chack Item Author Title value
-		if item.Author.Title != authorTitle {
-			t.Errorf(
-				"Item.Author.Title was incorrect, got: %v, want: %v",
-				item.Author.Title,
-				authorTitle,
-			)
-		}
-		// Chack Item Author Image value
-		if item.Author.Image != authorImg {
-			t.Errorf(
-				"Item.Author.Image was incorrect, got: %v, want: %v",
-				item.Author.Image, authorImg,
-			)
-		}
-		// Chack Item Author Link value
-		if item.Author.Link != feed.Link {
-			t.Errorf(
-				"Item.Author.Link was incorrect, got: %v, want: %v",
-				item.Author.Link, feed.Link,
-			)
-		}
+		item := NewItem(feedItem)
 		// Chack Item Title value without html tags
 		if item.Title != strip.StripTags(feedItem.Title) {
 			t.Errorf(
@@ -93,26 +69,11 @@ func TestNewItem(t *testing.T) {
 				strip.StripTags(feedItem.Title),
 			)
 		}
-		// Chack Item Description value without html tags
-		if item.Description != strip.StripTags(feedItem.Description) {
-			t.Errorf(
-				"Item.Description was incorrect, got: %v, want: %v",
-				item.Description,
-				strip.StripTags(feedItem.Description),
-			)
-		}
 		// Chack Item Link value
 		if item.Link != feedItem.Link {
 			t.Errorf(
 				"Item.Link was incorrect, got: %v, want: %v",
 				item.Link, feedItem.Link,
-			)
-		}
-		// Chack Item Image value
-		if item.Image != itemImg {
-			t.Errorf(
-				"Item.Image was incorrect, got: %v, want: %v",
-				item.Image, itemImg,
 			)
 		}
 	}
@@ -128,7 +89,7 @@ func TestGetMD5Hash(t *testing.T) {
 
 	feed, _ := getFeed(rssXML)
 	for _, feedItem := range feed.Items {
-		item := NewItem(feed, feedItem)
+		item := NewItem(feedItem)
 		itemHash := item.GetMD5Hash()
 
 		hash := MD5Hash(item.Link)

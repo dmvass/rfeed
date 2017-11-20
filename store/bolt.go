@@ -60,12 +60,12 @@ func (b *Bolt) Save(i *feed.Item) (err error) {
 }
 
 // Load by key, removes on first access, checks expire
-func (b *Bolt) Load(key string) (i *feed.Item, err error) {
+func (b *Bolt) Load(key []byte) (i *feed.Item, err error) {
 	err = b.db.View(func(tx *bolt.Tx) error {
 		bucket := tx.Bucket(Bucket)
-		val := bucket.Get([]byte(key))
+		val := bucket.Get(key)
 		if val == nil {
-			log.Printf("[INFO] not found %s", key)
+			log.Printf("Key not found %s", key)
 			return ErrLoadRejected
 		}
 		i = &feed.Item{}

@@ -3,6 +3,7 @@ package slack
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -34,7 +35,8 @@ func NewClient(token, channel string) *Slack {
 
 // Send message to channel
 func (s *Slack) Send(i *feed.Item) {
-	if err := s.SendMessage(i.Title, &PostMessageOpt{}); err != nil {
+	text := fmt.Sprintf("%s: %s", i.Title, i.Link)
+	if err := s.SendMessage(text, &PostMessageOpt{}); err != nil {
 		log.Fatal(err)
 	}
 }
