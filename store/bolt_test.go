@@ -39,6 +39,7 @@ func TestSaveAndLoadBolt(t *testing.T) {
 	if err != nil {
 		t.Errorf("Fatal error in db file: %s", err)
 	}
+
 	for _, table := range tables {
 		// create test item
 		item := &feed.Item{Title: table.Title, Link: table.Link}
@@ -62,6 +63,12 @@ func TestSaveAndLoadBolt(t *testing.T) {
 			t.Errorf("Load item was incorrect, got: %v, want: %v", item, loadItem)
 		}
 
+	}
+
+	// load not exists item from boltdb
+	loadItem, err := b.Load([]byte("not exists key"))
+	if err == nil {
+		t.Errorf("Load incorect item %v from boltdb", loadItem)
 	}
 
 }
