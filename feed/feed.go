@@ -2,85 +2,34 @@ package feed
 
 import (
 	"crypto/md5"
-	"encoding/json"
-	"log"
 	"strings"
 
-	"github.com/boltdb/bolt"
 	strip "github.com/grokify/html-strip-tags-go"
 	"github.com/mmcdole/gofeed"
-	"github.com/vasilishin/rfeed/slack"
-	"github.com/vasilishin/rfeed/store"
 
 	conf "github.com/vasilishin/rfeed/config"
 )
 
-var bucket = store.Bucket
-
-// Author feed data
-type Author struct {
-	Title, Link, Image string
+// Messanger interface for clients
+type Messanger interface {
+	Send(i *Item)
+	Check() bool
 }
 
 // Item can validate items and send to channels
 type Item struct {
-	Title, Description, Link, Image string
-	Author                          *Author
-}
-
-func getImage(img *gofeed.Image) (title string, imgURL string) {
-	if img != nil {
-		title = img.Title
-		imgURL = img.URL
-	}
-	return
+	Title, Link string
+	Origin      *gofeed.Item
 }
 
 // NewItem constructor
-func NewItem(feed *gofeed.Feed, feedItem *gofeed.Item) Item {
-	author := &Author{Link: feed.Link}
-	author.Title, author.Image = getImage(feed.Image)
-
-	item := Item{
-		Author:      author,
-		Title:       strip.StripTags(feedItem.Title),
-		Description: strip.StripTags(feedItem.Description),
-		Link:        feedItem.Link,
+func NewItem(feedItem *gofeed.Item) *Item {
+	item := &Item{
+		Title:  strip.StripTags(feedItem.Title),
+		Link:   feedItem.Link,
+		Origin: feedItem,
 	}
-	_, item.Image = getImage(feedItem.Image)
 	return item
-}
-
-// Save with Item md5 hashable key
-func (i *Item) Save() (err error) {
-	err = store.Engine.DB.Update(func(tx *bolt.Tx) error {
-		b := tx.Bucket(bucket)
-		jdata, jerr := json.Marshal(i)
-		if jerr != nil {
-			return err
-		}
-		return b.Put(i.GetMD5Hash(), jdata)
-	})
-	return err
-}
-
-// Exists Item md5 hashable key in store
-func (i *Item) Exists() bool {
-	var exists bool
-	store.Engine.DB.View(func(tx *bolt.Tx) error {
-		b := tx.Bucket(bucket)
-		v := b.Get(i.GetMD5Hash())
-		exists = v != nil
-		return nil
-	})
-	return exists
-}
-
-// Remove by key
-func (i *Item) Remove(key []byte) (err error) {
-	return store.Engine.DB.Update(func(tx *bolt.Tx) error {
-		return tx.Bucket(bucket).Delete(key)
-	})
 }
 
 // GetMD5Hash return hashable link
@@ -91,32 +40,9 @@ func (i *Item) GetMD5Hash() []byte {
 }
 
 // Send message to all channels
-func (i *Item) Send() {
-	senders := [...]func(){i.ToSlack}
-	for _, sender := range senders {
-		sender()
-	}
-}
-
-// ToSlack send message to slack channel
-func (i *Item) ToSlack() {
-	// create message attachment
-	attachment := []*slack.Attachment{
-		&slack.Attachment{
-			Title:      i.Title,
-			Text:       Trim(i.Description),
-			TitleLink:  i.Link,
-			ImageURL:   i.Image,
-			AuthorName: i.Author.Title,
-			AuthorLink: i.Author.Link,
-			AuthorIcon: i.Author.Image,
-		},
-	}
-	opt := &slack.PostMessageOpt{
-		Attachments: attachment,
-	}
-	if err := slack.Client.SendMessage(i.Title, opt); err != nil {
-		log.Fatal(err)
+func (i *Item) Send(clients *[]Messanger) {
+	for _, client := range *clients {
+		go client.Send(i)
 	}
 }
 

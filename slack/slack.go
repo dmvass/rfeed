@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+
+	"github.com/vasilishin/rfeed/feed"
 )
 
 const postMessageURI = "https://slack.com/api/chat.postMessage"
@@ -15,9 +17,6 @@ const (
 	Green = "#7CD197"
 	Red   = "#F35A00"
 )
-
-// Client global slack client
-var Client *Slack
 
 // Slack client
 type Slack struct {
@@ -31,6 +30,21 @@ func NewClient(token, channel string) *Slack {
 		channel: channel,
 	}
 	return slack
+}
+
+// Send message to channel
+func (s *Slack) Send(i *feed.Item) {
+	if err := s.SendMessage(i.Title, &PostMessageOpt{}); err != nil {
+		log.Fatal(err)
+	}
+}
+
+// Check client config
+func (s *Slack) Check() bool {
+	if len(s.token) > 0 && len(s.channel) > 0 {
+		return true
+	}
+	return false
 }
 
 // SendMessage send message to slack channel

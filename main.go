@@ -13,27 +13,41 @@ import (
 	"github.com/vasilishin/rfeed/slack"
 )
 
+// Clients consists from available messangers
+var Clients []feed.Messanger
+
 func init() {
 	var err error
+
 	// Read settings from config file
 	conf.Settings, err = conf.NewSettings("config", ".")
 	if err != nil {
 		panic(fmt.Errorf("Fatal error config file: %s", err))
 	}
-	// Create Slack client
-	slack.Client = slack.NewClient(
-		conf.Settings.Slack.Token,
-		conf.Settings.Slack.Channel,
-	)
-	// Create connect to Database
+
+	// Create connector to Database
 	store.Engine, err = store.NewBolt(conf.Settings.Store.Bolt.FilePath)
 	if err != nil {
 		panic(fmt.Errorf("Fatal error in Database: %s", err))
 	}
+
+	// Create message clients
+	clients := []feed.Messanger{
+		// Create Slack client
+		slack.NewClient(conf.Settings.Slack.Token, conf.Settings.Slack.Channel),
+	}
+	for _, c := range clients {
+		if c.Check() {
+			Clients = append(Clients, c)
+		}
+	}
+	if len(Clients) == 0 {
+		panic("You did't specify any message clients.")
+	}
 }
 
 func main() {
-	defer store.Engine.DB.Close()
+	defer store.Engine.Close()
 	// Read feeds every 5 min
 	duration := 5 * time.Minute
 	wg := new(sync.WaitGroup)
@@ -55,12 +69,12 @@ func observe(url string, duration time.Duration, wg *sync.WaitGroup) {
 			log.Fatal(err)
 		}
 		for _, i := range feed.FindItems(rfeed) {
-			item := feed.NewItem(rfeed, i)
-			if item.Exists() {
+			item := feed.NewItem(i)
+			if store.Engine.Exists(item.GetMD5Hash()) {
 				continue
 			}
-			item.Send()
-			err = item.Save()
+			item.Send(&Clients)
+			err = store.Engine.Save(item)
 			if err != nil {
 				log.Fatal(err)
 			}
