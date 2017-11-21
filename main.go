@@ -6,6 +6,8 @@ import (
 	"sync"
 	"time"
 
+	"github.com/vasilishin/rfeed/telegram"
+
 	conf "github.com/vasilishin/rfeed/config"
 	"github.com/vasilishin/rfeed/store"
 
@@ -35,6 +37,8 @@ func init() {
 	clients := []feed.Messanger{
 		// Create Slack client
 		slack.NewClient(conf.Settings.Slack.Token, conf.Settings.Slack.Channel),
+		// Create Telegram client
+		telegram.NewClient(conf.Settings.Telegram.Token, conf.Settings.Telegram.ChatID),
 	}
 	for _, c := range clients {
 		if c.Check() {

@@ -51,7 +51,7 @@ func TestSettingsStoreBolt(t *testing.T) {
 	}
 }
 
-func TestSettingsStoreSlack(t *testing.T) {
+func TestSettingsSlack(t *testing.T) {
 	readConfig()
 
 	got, wanted := Settings.Slack.Token, viper.GetString("slack.token")
@@ -62,5 +62,19 @@ func TestSettingsStoreSlack(t *testing.T) {
 	got, wanted = Settings.Slack.Channel, viper.GetString("slack.channel")
 	if got != wanted {
 		t.Errorf("Settings Slack.Channel was incorrect, got: %v, want: %v", got, wanted)
+	}
+}
+
+func TestSettingsTelegram(t *testing.T) {
+	readConfig()
+
+	tgot, twanted := Settings.Telegram.Token, viper.GetString("telegram.token")
+	if tgot != twanted {
+		t.Errorf("Settings Telegram.Token was incorrect, got: %v, want: %v", tgot, twanted)
+	}
+
+	cgot, cwanted := Settings.Telegram.ChatID, viper.GetInt64("telegram.chat_id")
+	if cgot != cwanted {
+		t.Errorf("Settings Telegram.ChatID was incorrect, got: %v, want: %v", cgot, cwanted)
 	}
 }

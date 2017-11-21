@@ -7,17 +7,23 @@ import (
 // Settings global config
 var Settings *AppSettings
 
-// SlackSettings consists from from slack settings
+// Slack Settings consists from from slack settings
 type slackSettings struct {
 	Token, Channel string
 }
 
-// boltSettings consists from boltdb settings
+// Telegram Settings consists from from slack settings
+type telegramSettings struct {
+	Token  string
+	ChatID int64
+}
+
+// Bolt Settings consists from boltdb settings
 type boltSettings struct {
 	FilePath string
 }
 
-// StoreSettings include all databases settings
+// Store Settings include all databases settings
 type storeSettings struct {
 	Bolt *boltSettings
 }
@@ -26,6 +32,7 @@ type storeSettings struct {
 type AppSettings struct {
 	Tags, Feeds, TrimStrings []string
 	Slack                    *slackSettings
+	Telegram                 *telegramSettings
 	Store                    *storeSettings
 }
 
@@ -44,6 +51,10 @@ func NewSettings(name, path string) (*AppSettings, error) {
 		Slack: &slackSettings{
 			Token:   viper.GetString("slack.token"),
 			Channel: viper.GetString("slack.channel"),
+		},
+		Telegram: &telegramSettings{
+			Token:  viper.GetString("telegram.token"),
+			ChatID: viper.GetInt64("telegram.chat_id"),
 		},
 		Store: &storeSettings{
 			Bolt: &boltSettings{

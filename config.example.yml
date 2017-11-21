@@ -12,5 +12,9 @@ store:
     file: "./bolt.db"
 
 slack:
-  token: "secret"
-  channel: "#some_channel"
+  token:
+  channel:
+
+telegram:
+  token:
+  chat_id:
