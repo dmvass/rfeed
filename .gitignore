@@ -24,3 +24,5 @@ vendor/
 
 # ide
 .vscode/
+
+build/
