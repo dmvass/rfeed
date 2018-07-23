@@ -3,7 +3,7 @@ package feed
 import (
 	"strings"
 
-	conf "github.com/vasilishin/rfeed/config"
+	conf "github.com/kandziu/rfeed/config"
 )
 
 // Trim substrings from text

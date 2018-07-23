@@ -6,8 +6,8 @@ import (
 	"testing"
 
 	strip "github.com/grokify/html-strip-tags-go"
+	conf "github.com/kandziu/rfeed/config"
 	"github.com/mmcdole/gofeed"
-	conf "github.com/vasilishin/rfeed/config"
 )
 
 var rssXML = `

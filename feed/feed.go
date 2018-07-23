@@ -7,7 +7,7 @@ import (
 	strip "github.com/grokify/html-strip-tags-go"
 	"github.com/mmcdole/gofeed"
 
-	conf "github.com/vasilishin/rfeed/config"
+	conf "github.com/kandziu/rfeed/config"
 )
 
 // Messanger interface for clients

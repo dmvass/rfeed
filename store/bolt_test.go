@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/vasilishin/rfeed/feed"
+	"github.com/kandziu/rfeed/feed"
 )
 
 // test data

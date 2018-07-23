@@ -8,7 +8,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/vasilishin/rfeed/feed"
+	"github.com/kandziu/rfeed/feed"
 )
 
 const postMessageURI = "https://slack.com/api/chat.postMessage"

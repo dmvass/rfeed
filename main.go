@@ -6,13 +6,13 @@ import (
 	"sync"
 	"time"
 
-	"github.com/vasilishin/rfeed/telegram"
+	"github.com/kandziu/rfeed/telegram"
 
-	conf "github.com/vasilishin/rfeed/config"
-	"github.com/vasilishin/rfeed/store"
+	conf "github.com/kandziu/rfeed/config"
+	"github.com/kandziu/rfeed/store"
 
-	"github.com/vasilishin/rfeed/feed"
-	"github.com/vasilishin/rfeed/slack"
+	"github.com/kandziu/rfeed/feed"
+	"github.com/kandziu/rfeed/slack"
 )
 
 // Clients consists from available messangers

@@ -4,9 +4,6 @@ tags:
 feeds:
   - https://medium.com/feed/tag/programming
 
-trim:
-  - "Read more"
-
 store:
   bolt:
     file: "./bolt.db"
