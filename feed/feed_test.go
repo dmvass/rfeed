@@ -45,7 +45,7 @@ var rssXML = `
 func init() {
 	var err error
 	// Read settings from config file
-	conf.Settings, err = conf.NewSettings("config", "..")
+	conf.Settings, err = conf.NewSettings("../config.yml")
 	if err != nil {
 		panic(fmt.Errorf("Fatal error config file: %s", err))
 	}

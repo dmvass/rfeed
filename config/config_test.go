@@ -9,7 +9,7 @@ import (
 
 func readConfig() (*AppSettings, error) {
 	var err error
-	Settings, err = NewSettings("config", "..")
+	Settings, err = NewSettings("../config.yml")
 	return Settings, err
 }
 

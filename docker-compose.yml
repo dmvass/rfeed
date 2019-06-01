@@ -1,0 +1,15 @@
+version: '3'
+services:
+  rfeed:
+    build: .
+    image: dmvass/rfeed:latest
+    restart: always
+    volumes:
+      - ./config.yml:/rfeed/config.yml
+      - ./var/db:/rfeed/db
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+    entrypoint: /rfeed/rfeed

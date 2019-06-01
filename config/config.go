@@ -1,6 +1,8 @@
 package config
 
 import (
+	"path/filepath"
+
 	"github.com/spf13/viper"
 )
 
@@ -31,15 +33,22 @@ type storeSettings struct {
 // AppSettings consists from all options in config file
 type AppSettings struct {
 	Tags, Feeds, TrimStrings []string
+	Interval                 int64
 	Slack                    *slackSettings
 	Telegram                 *telegramSettings
 	Store                    *storeSettings
 }
 
 // NewSettings create settings from config file
-func NewSettings(name, path string) (*AppSettings, error) {
-	viper.SetConfigName(name)
-	viper.AddConfigPath(path)
+func NewSettings(configPath string) (*AppSettings, error) {
+
+	dir, file := filepath.Split(configPath)
+	ext := filepath.Ext(file)
+
+	viper.AddConfigPath(dir)
+	viper.SetConfigName(file[:len(file)-len(ext)])
+	viper.SetConfigType(ext[1:])
+
 	err := viper.ReadInConfig()
 	if err != nil {
 		return nil, err
@@ -48,6 +57,7 @@ func NewSettings(name, path string) (*AppSettings, error) {
 		Tags:        viper.GetStringSlice("tags"),
 		Feeds:       viper.GetStringSlice("feeds"),
 		TrimStrings: viper.GetStringSlice("trim"),
+		Interval:    viper.GetInt64("check_interval"),
 		Slack: &slackSettings{
 			Token:   viper.GetString("slack.token"),
 			Channel: viper.GetString("slack.channel"),

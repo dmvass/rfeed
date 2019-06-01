@@ -1,17 +1,19 @@
-tags:
-  - python
-
 feeds:
   - https://medium.com/feed/tag/programming
 
+tags:
+  - go
+
 store:
   bolt:
-    file: "./bolt.db"
+    file: /rfeed/db/bolt.db
+
+check_interval: 60
 
 slack:
-  token:
-  channel:
+  token: slack-token
+  channel: slack-channel
 
 telegram:
-  token:
-  chat_id:
+  token: telegram-token
+  chat_id: telegram-chat_id

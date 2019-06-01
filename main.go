@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"sync"
@@ -15,14 +16,18 @@ import (
 	"github.com/dmvass/rfeed/slack"
 )
 
+var configPath = flag.String("config", "./config.yml", "config file path")
+
 // Clients consists from available messangers
 var Clients []feed.Messanger
 
 func init() {
 	var err error
 
+	flag.Parse()
+
 	// Read settings from config file
-	conf.Settings, err = conf.NewSettings("config", ".")
+	conf.Settings, err = conf.NewSettings(*configPath)
 	if err != nil {
 		panic(fmt.Errorf("Fatal error config file: %s", err))
 	}
@@ -52,8 +57,7 @@ func init() {
 
 func main() {
 	defer store.Engine.Close()
-	// Read feeds every 5 min
-	duration := 5 * time.Minute
+	duration := time.Duration(conf.Settings.Interval) * time.Second
 	wg := new(sync.WaitGroup)
 	for _, url := range conf.Settings.Feeds {
 		wg.Add(1)
