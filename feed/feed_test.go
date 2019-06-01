@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"testing"
 
+	conf "github.com/dmvass/rfeed/config"
 	strip "github.com/grokify/html-strip-tags-go"
-	conf "github.com/kandziu/rfeed/config"
 	"github.com/mmcdole/gofeed"
 )
 

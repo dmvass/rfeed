@@ -2,9 +2,9 @@
 
 This app was created to reading and filtering news feeds and translate it in messengers.
 
-[![Build Status](https://api.travis-ci.org/kandziu/rfeed.svg?branch=master)](https://travis-ci.org/kandziu/rfeed)
-[![codecov](https://codecov.io/gh/kandziu/rfeed/branch/master/graph/badge.svg)](https://codecov.io/gh/kandziu/rfeed)
-[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/kandziu/rfeed/blob/master/LICENSE)
+[![Build Status](https://api.travis-ci.org/dmvass/rfeed.svg?branch=master)](https://travis-ci.org/dmvass/rfeed)
+[![codecov](https://codecov.io/gh/dmvass/rfeed/branch/master/graph/badge.svg)](https://codecov.io/gh/dmvass/rfeed)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/dmvass/rfeed/blob/master/LICENSE)
 
 
 ## Installation
@@ -28,5 +28,5 @@ Run script and you should see
 
 
 ## Contributing 
-**rfeed** is an open source project and contributions are welcome! Check out the [Issues](https://github.com/kandziu/rfeed/issues) page to see if your idea for a contribution has already been mentioned, and feel free to raise an issue or submit a pull request.
+**rfeed** is an open source project and contributions are welcome! Check out the [Issues](https://github.com/dmvass/rfeed/issues) page to see if your idea for a contribution has already been mentioned, and feel free to raise an issue or submit a pull request.
 

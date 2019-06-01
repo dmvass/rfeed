@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/boltdb/bolt"
-	"github.com/kandziu/rfeed/feed"
+	"github.com/dmvass/rfeed/feed"
 )
 
 var (

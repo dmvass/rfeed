@@ -8,7 +8,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/kandziu/rfeed/feed"
+	"github.com/dmvass/rfeed/feed"
 )
 
 // Telegram API

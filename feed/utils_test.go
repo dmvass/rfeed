@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	conf "github.com/kandziu/rfeed/config"
+	conf "github.com/dmvass/rfeed/config"
 )
 
 func init() {
