@@ -1,12 +1,6 @@
 language: go
 
-branches:
-  only:
-    - ci
-
-matrix:
-  include:
-    - go: 1.9.x
+- go: 1.11.x
   
 cache:
   directories:
@@ -17,10 +11,9 @@ before_install:
   - cp config.example.yml config.yml
 
 install:
-  - go get github.com/modocache/gover
-  - go get -u github.com/golang/dep/cmd/dep
-  - dep ensure
   - export CI=TRAVIS
+  - export GO111MODULE=on
+  - go mod download
 
 script:
   - "go vet ./..."
