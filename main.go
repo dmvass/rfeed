@@ -4,9 +4,12 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"sync"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
+	"github.com/dmvass/rfeed/pool"
 	"github.com/dmvass/rfeed/telegram"
 
 	conf "github.com/dmvass/rfeed/config"
@@ -58,34 +61,55 @@ func init() {
 func main() {
 	defer store.Engine.Close()
 	duration := time.Duration(conf.Settings.Interval) * time.Second
-	wg := new(sync.WaitGroup)
-	for _, url := range conf.Settings.Feeds {
-		wg.Add(1)
-		go observe(url, duration, wg)
-	}
-	wg.Wait()
+
+	sigs := make(chan os.Signal, 1)
+	defer close(sigs)
+
+	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+
+	workerPool := pool.New(len(conf.Settings.Feeds))
+	workerPool.Run()
+
+	go func(p *pool.Pool) {
+		<-sigs
+		p.Close()
+	}(workerPool)
+
+	go observe(workerPool, duration)
+
+	workerPool.Wait()
 }
 
 // Observer for resource
-func observe(url string, duration time.Duration, wg *sync.WaitGroup) {
-	defer wg.Done()
+func observe(p *pool.Pool, duration time.Duration) {
 	ticker := time.NewTicker(duration)
 	for range ticker.C {
-		log.Printf("Read from %s resource", url)
-		rfeed, err := feed.Read(url)
-		if err != nil {
-			log.Fatal(err)
-		}
-		for _, i := range feed.FindItems(rfeed) {
-			item := feed.NewItem(i)
-			if store.Engine.Exists(item.GetMD5Hash()) {
-				continue
-			}
-			item.Send(&Clients)
-			err = store.Engine.Save(item)
-			if err != nil {
-				log.Fatal(err)
-			}
+		for _, url := range conf.Settings.Feeds {
+
+			job := func(url string) func() {
+				return func() {
+					log.Printf("Read from %s resource", url)
+					rfeed, err := feed.Read(url)
+					if err != nil {
+						log.Print(err)
+						return
+					}
+					for _, i := range feed.FindItems(rfeed) {
+						item := feed.NewItem(i)
+						if store.Engine.Exists(item.GetMD5Hash()) {
+							continue
+						}
+						item.Send(&Clients)
+						err = store.Engine.Save(item)
+						if err != nil {
+							log.Print(err)
+							continue
+						}
+					}
+				}
+			}(url)
+
+			p.Submit(job)
 		}
 	}
 }

@@ -13,11 +13,54 @@ import (
 
 const postMessageURI = "https://slack.com/api/chat.postMessage"
 
-// Colors for slack Attachment
-const (
-	Green = "#7CD197"
-	Red   = "#F35A00"
-)
+// PostMessage post message
+type PostMessage struct {
+	Channel string `json:"channel"`
+	Text    string `json:"text"`
+	PostMessageOpt
+}
+
+// PostMessageOpt option type for `chat.postMessage` api
+type PostMessageOpt struct {
+	AsUser      bool          `json:"as_user"`
+	Username    string        `json:"username"`
+	Parse       string        `json:"parse"`
+	LinkNames   string        `json:"link_names"`
+	Attachments []*Attachment `json:"attachments"`
+	UnfurlLinks string        `json:"unfurl_links"`
+	UnfurlMedia string        `json:"unfurl_media"`
+	IconURL     string        `json:"icon_url"`
+	IconEmoji   string        `json:"icon_emoji"`
+}
+
+// attachField it is possible to create more richly-formatted
+// messages using Attachments. https://api.slack.com/docs/attachments
+type attachField struct {
+	Title string `json:"title"`
+	Value string `json:"value"`
+	Short bool   `json:"short"`
+}
+
+// Attachment for message
+type Attachment struct {
+	Color         string         `json:"color,omitempty"`
+	Fallback      string         `json:"fallback"`
+	AuthorName    string         `json:"author_name,omitempty"`
+	AuthorSubname string         `json:"author_subname,omitempty"`
+	AuthorLink    string         `json:"author_link,omitempty"`
+	AuthorIcon    string         `json:"author_icon,omitempty"`
+	Title         string         `json:"title,omitempty"`
+	TitleLink     string         `json:"title_link,omitempty"`
+	Pretext       string         `json:"pretext,omitempty"`
+	Text          string         `json:"text"`
+	ImageURL      string         `json:"image_url,omitempty"`
+	ThumbURL      string         `json:"thumb_url,omitempty"`
+	Footer        string         `json:"footer,omitempty"`
+	FooterIcon    string         `json:"footer_icon,omitempty"`
+	TimeStamp     int64          `json:"ts,omitempty"`
+	Fields        []*attachField `json:"fields,omitempty"`
+	MarkdownIn    []string       `json:"mrkdwn_in,omitempty"`
+}
 
 // Slack client
 type Slack struct {

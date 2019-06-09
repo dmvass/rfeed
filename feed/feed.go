@@ -59,7 +59,7 @@ func Read(url string) (*gofeed.Feed, error) {
 // FindItems return filtered items
 func FindItems(feed *gofeed.Feed) (matchItems []*gofeed.Item) {
 	for _, item := range feed.Items {
-		if SkipItem(item) {
+		if skipItem(item) {
 			continue
 		}
 		matchItems = append(matchItems, item)
@@ -67,8 +67,7 @@ func FindItems(feed *gofeed.Feed) (matchItems []*gofeed.Item) {
 	return
 }
 
-// SkipItem check item categories
-func SkipItem(item *gofeed.Item) bool {
+func skipItem(item *gofeed.Item) bool {
 	contains := func(categories []string, tag string) bool {
 		for _, c := range categories {
 			if strings.EqualFold(c, tag) {

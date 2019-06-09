@@ -127,7 +127,7 @@ func TestSkipItem(t *testing.T) {
 
 	for _, table := range tables {
 		conf.Settings.Tags = table.Tags
-		if res := SkipItem(table.Item); res != table.Wanted {
+		if res := skipItem(table.Item); res != table.Wanted {
 			t.Errorf(
 				"Skip result incorrect, got: %v, want: %v, tags: %v, item: %v",
 				res, table.Wanted, table.Tags, table.Item.Title,
