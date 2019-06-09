@@ -17,6 +17,12 @@ const (
 	SendMessageMethod = "sendMessage"
 )
 
+// Message type
+type Message struct {
+	ChatID int64  `json:"chat_id"`
+	Text   string `json:"text"`
+}
+
 // Telegram client
 type Telegram struct {
 	token  string
