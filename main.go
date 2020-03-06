@@ -94,11 +94,13 @@ func observe(p *pool.Pool, duration time.Duration) {
 						log.Print(err)
 						return
 					}
+					newCount := 0
 					for _, i := range feed.FindItems(rfeed) {
 						item := feed.NewItem(i)
 						if store.Engine.Exists(item.GetMD5Hash()) {
 							continue
 						}
+						newCount++
 						item.Send(&Clients)
 						err = store.Engine.Save(item)
 						if err != nil {
@@ -106,6 +108,7 @@ func observe(p *pool.Pool, duration time.Duration) {
 							continue
 						}
 					}
+					log.Printf("Found %d new items in %s", newCount, url)
 				}
 			}(url)
 

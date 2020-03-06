@@ -1,16 +1,13 @@
 # Builder image
 FROM golang:alpine AS build
 
-RUN apk update && apk add bash git gcc libc-dev
-
 ADD . /build
 WORKDIR /build
 
 COPY . .
 
 RUN go mod download
-RUN go test -v ./...
-RUN GOOS=linux GOARCH=amd64 go build -o /build/rfeed
+RUN CGO_ENABLED=0 go build -a -installsuffix cgo -o /build/rfeed .
 
 # Application image
 FROM scratch AS rfeed
