@@ -76,6 +76,9 @@ func skipItem(item *gofeed.Item) bool {
 		}
 		return false
 	}
+	if conf.Settings.Tags == nil {
+		return false
+	}
 	for _, tag := range conf.Settings.Tags {
 		if contains(item.Categories, tag) {
 			return false
