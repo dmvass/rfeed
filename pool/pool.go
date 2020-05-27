@@ -7,9 +7,10 @@ import (
 
 // Pool is a worker group that runs a number of jobs
 type Pool struct {
-	size int
-	jobs chan func()
-	wg   *sync.WaitGroup
+	size   int
+	jobs   chan func()
+	wg     *sync.WaitGroup
+	closed bool
 }
 
 // New pool
@@ -33,11 +34,17 @@ func (p *Pool) Run() {
 func (p *Pool) Wait() { p.wg.Wait() }
 
 // Submit new job to the pool
-func (p *Pool) Submit(job func()) { p.jobs <- job }
+func (p *Pool) Submit(job func()) {
+	if p.closed {
+		return
+	}
+	p.jobs <- job
+}
 
 // Close pool
 func (p *Pool) Close() {
 	log.Println("Shutdown worker pool")
+	p.closed = true
 	close(p.jobs)
 }
 
